@@ -2,7 +2,7 @@
 
 # fortytwo
 
-A local-first personal assistant layer with memory, agency boundaries, and auditable evolution.
+A local-first personal assistant spine for the agents and tools you already use.
 
 *The answer is 42. The hard part is knowing the right question.*
 
@@ -10,37 +10,59 @@ A local-first personal assistant layer with memory, agency boundaries, and audit
 
 ## What is fortytwo?
 
-**fortytwo** is the home of **Ford**: a personal assistant system built around Claude Code, local memory, explicit approval, and durable operational state.
+**fortytwo** is the home of **Ford**: a personal assistant layer that wraps an existing agent or coding harness with memory, channels, approval gates, policy boundaries, durable jobs, and audit.
 
-Ford is not a chatbot with memory bolted on. It is an always-available working assistant with a spine:
+It is not trying to replace Claude Code, Codex, Pi, OpenCode, MCPs, skills, plugins, or local tools. The philosophy is:
+
+```text
+bring your own agent
+bring your own tools
+fortytwo supplies the personal-assistant spine
+```
+
+We are starting with Claude Code because it is the reference cockpit we use today. The core should remain portable enough to support other capable harnesses over time, hopefully with help from the community.
+
+Ford is not a chatbot with memory bolted on. It is an always-available working assistant with:
 
 * identity
-* memory
-* approval gate
+* local memory
+* channel access
+* approval gates
+* policy boundaries
 * journal
-* deferred work
-* operations
-* auditable evolution
+* deferred jobs
+* audit
+* reviewable evolution
 
 Ford can draft, reason, remember, and help coordinate work. It does **not** act externally without approval.
 
 ## Why it exists
+
+There are already strong agents, MCP servers, plugins, skills, and local tools. The missing piece is usually not another agent from scratch. It is the personal-assistant layer around them:
+
+```text
+channels + memory + policy + approvals + jobs + audit
+```
 
 Personal assistants become useful when they can remember, act, and improve. They become dangerous when those abilities are added without boundaries.
 
 fortytwo starts with the backbone first:
 
 ```text
-identity + memory + safety gate + journal + operations
+identity + memory + safety gate + journal + durable jobs + operations
 ```
 
-Integrations such as calendar, email, browser automation, CRM, and payments can come later. They should all attach to the same gate, memory model, and audit trail.
+Integrations such as calendar, email, browser automation, CRM, payments, and other channel adapters can come later. They should all attach to the same gate, memory model, and audit trail.
 
 ## Design principles
 
 ### Local-first where it matters
 
 Private memory and recall are designed to live locally, with Markdown for human-readable policy and SQLite for durable operational state.
+
+### Bring your own agent
+
+Claude Code is the first harness, not the permanent boundary. The goal is to make the core semantics portable across agents, models, runtimes, and tool ecosystems.
 
 ### Conservative autonomy
 
@@ -58,38 +80,52 @@ Documents, messages, web pages, tool output, and recalled memory are treated as 
 
 Every meaningful change should be inspectable as a file diff, database record, or approval decision.
 
-## Current focus
+## Current state
 
-## M1 — The Spine
+### M1 — The Spine
 
-The core assistant backbone:
+The first spine is implemented around Claude Code and Telegram:
 
 * Memory MCP over SQLite, FTS, and vector recall
 * Journal and registry state
 * Telegram bridge
-* Claude Code as the reasoning cockpit
+* Claude Code as the reference cockpit
 * Subagents and reusable skills
 * PreToolUse safety gate
 * Approval flow for external and irreversible actions
+* Durable local jobs and Pulse
 * Restart-resilient operation
 
-## M2 — Trust Hardening
+### M2 — Trust Hardening
 
-The next layer:
+The hardening layer now being built:
 
 * prompt-injection defense
 * source authority classification
+* content-is-not-authority runtime rules
 * tamper-evident audit log
 * payload-bound approvals
 * replay protection
 * typed memory governance
 * review, export, and prune flows
 
+### Future adapters
+
+The project should stay open to other harnesses and channels:
+
+* Codex
+* Pi
+* OpenCode
+* other agent runtimes
+* community MCPs, plugins, skills, and local tools
+
+The contract matters more than the adapter: preserve provenance, classify capabilities, route risky actions through the gate, and keep durable state inspectable.
+
 ## Architecture
 
 ```text
-Claude Code
-  -> Ford identity, agents, skills
+agent / harness
+  -> Ford identity, policy, agents, skills
   -> Memory MCP
     -> SQLite journal, registry, approvals, jobs
     -> FTS and vector recall
@@ -103,7 +139,7 @@ Claude Code
 
 fortytwo is early, personal, and safety-first.
 
-The goal is not to make an agent that can do everything. The goal is to make an assistant that can become more useful without becoming less trustworthy.
+The goal is not to make an agent that can do everything. The goal is to make existing agents useful as dependable personal assistants without making them less trustworthy.
 
 ## Motto
 
