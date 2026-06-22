@@ -6,6 +6,8 @@ A local-first personal assistant spine for the agents and tools you already use.
 
 *The answer is 42. The hard part is knowing the right question.*
 
+**[forty-two.it](https://forty-two.it)**
+
 ---
 
 ## What is fortytwo?
