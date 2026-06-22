@@ -167,3 +167,7 @@ The goal is not to make an agent that can do everything. The goal is to make exi
 > Don’t Panic.
 > Ask the right question.
 > Never cross the gate silently.
+
+---
+
+Created and maintained by [**Enrico Deleo**](https://enricodeleo.com).
