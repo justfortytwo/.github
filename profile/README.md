@@ -1,4 +1,4 @@
-![fortytwo 42 mark](./assets/fortytwo-42.png)
+![fortytwo 42 mark](./assets/fortytwo.png)
 
 # fortytwo
 
