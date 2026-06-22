@@ -36,6 +36,24 @@ Ford is not a chatbot with memory bolted on. It is an always-available working a
 
 Ford can draft, reason, remember, and help coordinate work. It does **not** act externally without approval.
 
+## Repositories
+
+fortytwo is built as small, focused pieces — each its own repo, each named after *The Hitchhiker's Guide to the Galaxy*. Two are designed to stand alone in **any** Claude Code setup; the rest compose into Ford.
+
+| Repo | Role | Kind |
+|------|------|------|
+| [**vogon**](https://github.com/justfortytwo/vogon) | PreToolUse **safety gate** — autonomy-tier policy engine, fail-closed bash allowlist, approval hook | à-la-carte |
+| [**guide**](https://github.com/justfortytwo/guide) | Semantic-**memory** MCP server (SQLite + sqlite-vec + Ollama embeddings) | à-la-carte |
+| [**deepthought**](https://github.com/justfortytwo/deepthought) | Model-driven **salience extraction** for memory enrichment | engine |
+| [**babelfish**](https://github.com/justfortytwo/babelfish) | Telegram **channel adapter** + pairing/login bridge | Ford layer |
+| [**ford**](https://github.com/justfortytwo/ford) | **Persona / context** templates the installer renders | Ford layer |
+| [**magrathea**](https://github.com/justfortytwo/magrathea) | `create-fortytwo` — the **installer** + lifecycle CLI | Ford layer |
+| [**subetha**](https://github.com/justfortytwo/subetha) | Claude Code plugin **marketplace** + umbrella plugin | distribution |
+
+Distribution is two-surfaced: a Claude Code **plugin marketplace** (skills, agents, the gate hook, MCP registration) and **npm + an installer** for the runtime engine and the non-distributable persona.
+
+> **Status:** these are early scaffolds, actively being extracted from the working spine. The structure and cross-package contracts are in place and compile, but they are not yet published to npm or wired end-to-end. Follow along to watch the extraction land.
+
 ## Why it exists
 
 There are already strong agents, MCP servers, plugins, skills, and local tools. The missing piece is usually not another agent from scratch. It is the personal-assistant layer around them:
@@ -109,6 +127,10 @@ The hardening layer now being built:
 * typed memory governance
 * review, export, and prune flows
 
+### Decomposition — in progress
+
+The working spine is being broken out of a single repo into the focused, independently-installable components listed under [Repositories](#repositories). Each carries an explicit, versioned contract (`POLICY_SCHEMA_VERSION` for the gate, `GUIDE_TOOL_CONTRACT_VERSION` for memory) so the pieces can evolve and be adopted à la carte.
+
 ### Future adapters
 
 The project should stay open to other harnesses and channels:
@@ -124,15 +146,14 @@ The contract matters more than the adapter: preserve provenance, classify capabi
 ## Architecture
 
 ```text
-agent / harness
-  -> Ford identity, policy, agents, skills
-  -> Memory MCP
-    -> SQLite journal, registry, approvals, jobs
-    -> FTS and vector recall
-  -> Safety gate
-    -> allow, defer, deny
-  -> Telegram bridge
-    -> mobile interface, approval cards, continuity
+agent / harness            (Claude Code today)
+  -> ford                  persona, policy, agents, skills
+  -> guide                 Memory MCP — SQLite journal/registry/approvals/jobs, FTS + vector recall
+       +- deepthought      salience extraction for enrichment
+  -> vogon                 safety gate — allow / defer / deny
+  -> babelfish             Telegram bridge — mobile interface, approval cards, continuity
+  -> magrathea             installer + lifecycle — init / doctor / update / rollback
+  -> subetha               plugin marketplace
 ```
 
 ## Status
