@@ -12,7 +12,7 @@ A local-first personal assistant spine for the agents and tools you already use.
 
 ## What is fortytwo?
 
-**fortytwo** is the home of **Ford**: a personal assistant layer that wraps an existing agent or coding harness with memory, channels, approval gates, policy boundaries, durable jobs, and audit.
+**fortytwo** is a personal assistant layer that wraps an existing agent or coding harness with memory, channels, approval gates, policy boundaries, durable jobs, and audit.
 
 It is not trying to replace Claude Code, Codex, Pi, OpenCode, MCPs, skills, plugins, or local tools. The philosophy is:
 
@@ -24,7 +24,7 @@ fortytwo supplies the personal-assistant spine
 
 We are starting with Claude Code because it is the reference cockpit we use today. The core should remain portable enough to support other capable harnesses over time, hopefully with help from the community.
 
-Ford is not a chatbot with memory bolted on. It is an always-available working assistant with:
+fortytwo is not a chatbot with memory bolted on. It is an always-available working assistant with:
 
 * identity
 * local memory
@@ -36,21 +36,21 @@ Ford is not a chatbot with memory bolted on. It is an always-available working a
 * audit
 * reviewable evolution
 
-Ford can draft, reason, remember, and help coordinate work. It does **not** act externally without approval.
+It can draft, reason, remember, and help coordinate work. It does **not** act externally without approval.
 
 ## Repositories
 
-fortytwo is built as small, focused pieces — each its own repo, each named after *The Hitchhiker's Guide to the Galaxy*. Two are designed to stand alone in **any** Claude Code setup; the rest compose into Ford.
+fortytwo is built as small, focused pieces — each its own repo, named for the role it plays. Two are designed to stand alone in **any** Claude Code setup; the rest compose into the full assistant.
 
 | Repo | Role | Kind |
 |------|------|------|
-| [**vogon**](https://github.com/justfortytwo/vogon) | PreToolUse **safety gate** — autonomy-tier policy engine, fail-closed bash allowlist, approval hook | à-la-carte |
-| [**guide**](https://github.com/justfortytwo/guide) | Semantic-**memory** MCP server (SQLite + sqlite-vec + Ollama embeddings) | à-la-carte |
-| [**deepthought**](https://github.com/justfortytwo/deepthought) | Model-driven **salience extraction** for memory enrichment | engine |
-| [**babelfish**](https://github.com/justfortytwo/babelfish) | Telegram **channel adapter** + pairing/login bridge | Ford layer |
-| [**ford**](https://github.com/justfortytwo/ford) | **Persona / context** templates the installer renders | Ford layer |
-| [**magrathea**](https://github.com/justfortytwo/magrathea) | `create-fortytwo` — the **installer** + lifecycle CLI | Ford layer |
-| [**subetha**](https://github.com/justfortytwo/subetha) | Claude Code plugin **marketplace** + umbrella plugin | distribution |
+| [**gate**](https://github.com/justfortytwo/gate) | PreToolUse **safety gate** — autonomy-tier policy engine, fail-closed bash allowlist, approval hook | à-la-carte |
+| [**memory**](https://github.com/justfortytwo/memory) | Semantic-**memory** MCP server (SQLite + sqlite-vec + Ollama embeddings) | à-la-carte |
+| [**salience**](https://github.com/justfortytwo/salience) | Model-driven **salience extraction** for memory enrichment | engine |
+| [**telegram**](https://github.com/justfortytwo/telegram) | Telegram **channel adapter** + pairing/login bridge | assistant layer |
+| [**persona**](https://github.com/justfortytwo/persona) | **Persona / context** templates the installer renders | assistant layer |
+| [**installer**](https://github.com/justfortytwo/installer) | `create-fortytwo` — the **installer** + lifecycle CLI | assistant layer |
+| [**marketplace**](https://github.com/justfortytwo/marketplace) | Claude Code plugin **marketplace** + umbrella plugin | distribution |
 
 Distribution is two-surfaced: a Claude Code **plugin marketplace** (skills, agents, the gate hook, MCP registration) and **npm + an installer** for the runtime engine and the non-distributable persona.
 
@@ -86,11 +86,11 @@ Claude Code is the first harness, not the permanent boundary. The goal is to mak
 
 ### Conservative autonomy
 
-Ford may read, draft, reason, and work internally. External or irreversible actions require approval.
+The assistant may read, draft, reason, and work internally. External or irreversible actions require approval.
 
 ### Propose-only learning
 
-Ford may notice patterns, but it does not silently promote them into durable behavior. Preferences, rules, skills, and guide entries are proposed first, then approved.
+The assistant may notice patterns, but it does not silently promote them into durable behavior. Preferences, rules, skills, and memory entries are proposed first, then approved.
 
 ### Prompt-injection boundaries
 
@@ -131,7 +131,7 @@ The hardening layer now being built:
 
 ### Decomposition — in progress
 
-The working spine is being broken out of a single repo into the focused, independently-installable components listed under [Repositories](#repositories). Each carries an explicit, versioned contract (`POLICY_SCHEMA_VERSION` for the gate, `GUIDE_TOOL_CONTRACT_VERSION` for memory) so the pieces can evolve and be adopted à la carte.
+The working spine is being broken out of a single repo into the focused, independently-installable components listed under [Repositories](#repositories). Each carries an explicit, versioned contract (`POLICY_SCHEMA_VERSION` for the gate, `MEMORY_TOOL_CONTRACT_VERSION` for memory) so the pieces can evolve and be adopted à la carte.
 
 ### Future adapters
 
@@ -149,13 +149,13 @@ The contract matters more than the adapter: preserve provenance, classify capabi
 
 ```text
 agent / harness            (Claude Code today)
-  -> ford                  persona, policy, agents, skills
-  -> guide                 Memory MCP — SQLite journal/registry/approvals/jobs, FTS + vector recall
-       +- deepthought      salience extraction for enrichment
-  -> vogon                 safety gate — allow / defer / deny
-  -> babelfish             Telegram bridge — mobile interface, approval cards, continuity
-  -> magrathea             installer + lifecycle — init / doctor / update / rollback
-  -> subetha               plugin marketplace
+  -> persona               identity, policy, agents, skills
+  -> memory                Memory MCP — SQLite journal/registry/approvals/jobs, FTS + vector recall
+       +- salience         salience extraction for enrichment
+  -> gate                  safety gate — allow / defer / deny
+  -> telegram              Telegram bridge — mobile interface, approval cards, continuity
+  -> installer             installer + lifecycle — init / doctor / update / rollback
+  -> marketplace           plugin marketplace
 ```
 
 ## Status
@@ -166,10 +166,12 @@ The goal is not to make an agent that can do everything. The goal is to make exi
 
 ## Motto
 
-> Don’t Panic.
+> Stay calm.
 > Ask the right question.
 > Never cross the gate silently.
 
 ---
 
 Created and maintained by [**Enrico Deleo**](https://enricodeleo.com).
+
+<sub>Acknowledgements — the project's playful side (the number 42, the occasional borrowed turn of phrase) is an affectionate nod to Douglas Adams' *The Hitchhiker's Guide to the Galaxy*. fortytwo is an independent project, not affiliated with or endorsed by the Douglas Adams estate.</sub>
