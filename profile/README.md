@@ -173,5 +173,3 @@ The goal is not to make an agent that can do everything. The goal is to make exi
 ---
 
 Created and maintained by [**Enrico Deleo**](https://enricodeleo.com).
-
-<sub>Acknowledgements — the project's playful side (the number 42, the occasional borrowed turn of phrase) is an affectionate nod to Douglas Adams' *The Hitchhiker's Guide to the Galaxy*. fortytwo is an independent project, not affiliated with or endorsed by the Douglas Adams estate.</sub>
