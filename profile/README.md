@@ -54,7 +54,14 @@ fortytwo is built as small, focused pieces — each its own repo, named for the 
 
 Distribution is two-surfaced: a Claude Code **plugin marketplace** (skills, agents, the gate hook, MCP registration) and **npm + an installer** for the runtime engine and the non-distributable persona.
 
-> **Status:** these are early scaffolds, actively being extracted from the working spine. The structure and cross-package contracts are in place and compile, but they are not yet published to npm or wired end-to-end. Follow along to watch the extraction land.
+> **Status:** the engine is **published to npm and installable today** — the seven repos are extracted, their cross-package contracts versioned, and CI is green on each.
+
+```sh
+npm install @justfortytwo/installer   # then:
+npx create-fortytwo init              # scaffolds an assistant; pulls the engine on demand
+```
+
+`update`/`rollback` wiring and the **M2 — Trust Hardening** items (below) are still landing.
 
 ## Why it exists
 
@@ -129,9 +136,9 @@ The hardening layer now being built:
 * typed memory governance
 * review, export, and prune flows
 
-### Decomposition — in progress
+### Decomposition — shipped
 
-The working spine is being broken out of a single repo into the focused, independently-installable components listed under [Repositories](#repositories). Each carries an explicit, versioned contract (`POLICY_SCHEMA_VERSION` for the gate, `MEMORY_TOOL_CONTRACT_VERSION` for memory) so the pieces can evolve and be adopted à la carte.
+The spine has been broken out of the single repo into the focused, independently-installable components listed under [Repositories](#repositories) — **published to npm and CI-verified**. Each carries an explicit, versioned contract (`POLICY_SCHEMA_VERSION` for the gate, `MEMORY_TOOL_CONTRACT_VERSION` for memory) so the pieces evolve and are adopted à la carte. `fortytwo init` installs the engine on demand and scaffolds the persona; `forget` and dynamic `/login` pairing are wired; `update`/`rollback` are next.
 
 ### Future adapters
 
