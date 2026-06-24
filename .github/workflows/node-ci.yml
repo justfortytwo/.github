@@ -1,0 +1,78 @@
+name: node-ci
+
+# Reusable CI for the fortytwo Node packages. The packages are an unpublished,
+# cross-linked polyrepo: e.g. memory imports gate, installer imports gate +
+# memory + persona. CI can't `npm install` those siblings (not on npm yet), so
+# it reconstructs the sibling links FROM SOURCE — the same shape as local dev
+# (see ci-local.sh). Callers pass their dependency-ordered sibling list.
+
+on:
+  workflow_call:
+    inputs:
+      siblings:
+        description: "Space-separated, dependency-ordered @justfortytwo sibling repos to clone, build, and link. Empty for leaf packages."
+        type: string
+        default: ""
+      node-versions:
+        description: "JSON array of Node major versions for the matrix."
+        type: string
+        default: '["20", "22"]'
+
+jobs:
+  build-test:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        node: ${{ fromJSON(inputs.node-versions) }}
+    steps:
+      - name: Checkout package
+        uses: actions/checkout@v4
+        with:
+          path: pkg
+
+      - name: Setup Node ${{ matrix.node }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node }}
+          cache: npm
+          cache-dependency-path: pkg/package-lock.json
+
+      - name: Install (third-party deps)
+        working-directory: pkg
+        run: npm ci --no-audit --no-fund || npm install --no-audit --no-fund --legacy-peer-deps
+
+      # Untrusted/external values (siblings, owner) are passed via env and only
+      # referenced as shell variables — never interpolated into the script body.
+      - name: Clone, build, and link siblings from source
+        if: ${{ inputs.siblings != '' }}
+        env:
+          SIBLINGS: ${{ inputs.siblings }}
+          OWNER: ${{ github.repository_owner }}
+        run: |
+          set -euo pipefail
+          # 1. Clone + install each sibling (shallow; public repos, no token).
+          for s in $SIBLINGS; do
+            git clone --depth 1 "https://github.com/$OWNER/$s.git" "$s"
+            ( cd "$s" && { npm ci --no-audit --no-fund || npm install --no-audit --no-fund --legacy-peer-deps; } )
+          done
+          # 2. Full-mesh link every cloned sibling into each sibling AND the pkg
+          #    (done AFTER each npm ci, which wipes node_modules). Over-linking is
+          #    harmless — a package only loads what it imports.
+          link_into() {
+            mkdir -p "$1/node_modules/@justfortytwo"
+            for s in $SIBLINGS; do ln -sfn "$GITHUB_WORKSPACE/$s" "$1/node_modules/@justfortytwo/$s"; done
+          }
+          for s in $SIBLINGS; do link_into "$s"; done
+          link_into pkg
+          # 3. Build siblings in the given dependency order (each now has its
+          #    own siblings linked, so tsc resolves the imported types).
+          for s in $SIBLINGS; do ( cd "$s" && npm run build --if-present ); done
+
+      - name: Build (tsc — also the typecheck)
+        working-directory: pkg
+        run: npm run build --if-present
+
+      - name: Test (vitest)
+        working-directory: pkg
+        run: npx vitest run
