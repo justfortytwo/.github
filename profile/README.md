@@ -61,7 +61,7 @@ npm install @justfortytwo/installer   # then:
 npx create-fortytwo init              # scaffolds an assistant; pulls the engine on demand
 ```
 
-`update`/`rollback` wiring and the **M2 — Trust Hardening** items (below) are still landing.
+The full lifecycle — `init`, `doctor`, `update`, `rollback`, `forget`, `pair` — is wired; the **M2 — Trust Hardening** items (below) are what's still landing.
 
 ## Why it exists
 
@@ -138,7 +138,7 @@ The hardening layer now being built:
 
 ### Decomposition — shipped
 
-The spine has been broken out of the single repo into the focused, independently-installable components listed under [Repositories](#repositories) — **published to npm and CI-verified**. Each carries an explicit, versioned contract (`POLICY_SCHEMA_VERSION` for the gate, `MEMORY_TOOL_CONTRACT_VERSION` for memory) so the pieces evolve and are adopted à la carte. `fortytwo init` installs the engine on demand and scaffolds the persona; `forget` and dynamic `/login` pairing are wired; `update`/`rollback` are next.
+The spine has been broken out of the single repo into the focused, independently-installable components listed under [Repositories](#repositories) — **published to npm and CI-verified**. Each carries an explicit, versioned contract (`POLICY_SCHEMA_VERSION` for the gate, `MEMORY_TOOL_CONTRACT_VERSION` for memory) so the pieces evolve and are adopted à la carte. `fortytwo init` installs the engine on demand and scaffolds the persona; `forget`, dynamic `/login` pairing, and the `update`/`rollback` lifecycle (latest-in-range install with a recorded rollback baseline) are all wired.
 
 ### Future adapters
 
